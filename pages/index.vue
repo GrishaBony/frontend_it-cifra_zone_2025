@@ -1,31 +1,33 @@
 <script setup lang="ts">
 const { MainButton, useWebApp, useWebAppPopup } = await import('vue-tg')
-// можно алиас прописать глобальный, чек доку
 
 const { showAlert } = useWebAppPopup()
 
-const { initDataUnsafe } = useWebApp()
+const { ready, initData, initDataUnsafe, close } = useWebApp()
+
+ready();
+
+if (!initData) {
+    throw createError({
+    statusCode: 401,
+  })
+}
+
 </script>
 
 <template>
-    <section>
-        <h1>Hello from my first <b>telegram mini app!</b></h1>
-
-        <div class="p-8 bg-white rounded-lg">
-            Oh, <p class="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">tailwind</p> work!
+    <!-- <section> -->
+    <div class="flex flex-col items-center h-screen">
+        <div class="flex flex-col items-center justify-center h-full">
+            <div class="flex flex-col m-4 bg-gray-100 border border-gray-200 shadow-2xs rounded-xl p-4 md:p-5 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                <div class="animate-spin inline-block size-6 border-3 border-current border-t-transparent text-gray-800 rounded-full dark:text-white" role="status" aria-label="loading"></div>
+            </div>
         </div>
-        
-        <input id="checkbox" type="checkbox" class="form-checkbox text-pink-300" />
-
-        <div class="flex gap-x-3" data-hs-pin-input="">
-          <input type="text" class="block w-9.5 text-center border-gray-200 rounded-md sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="⚬" data-hs-pin-input-item="">
-          <input type="text" class="block w-9.5 text-center border-gray-200 rounded-md sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="⚬" data-hs-pin-input-item="">
-          <input type="text" class="block w-9.5 text-center border-gray-200 rounded-md sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="⚬" data-hs-pin-input-item="">
-          <input type="text" class="block w-9.5 text-center border-gray-200 rounded-md sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600" placeholder="⚬" data-hs-pin-input-item="">
-        </div>
-
-        <MainButton text="Вычислить по ip" color="rgba(0, 191, 111, 1)" @click="() => showAlert(`Привет, human! А я тут уже знаю что ты ${initDataUnsafe.user?.first_name}, а юз твой - @${initDataUnsafe.user?.username}`)"/>
-    </section>
+        <p class="m-2 text-sm text-gray-950 dark:text-neutral-400">
+           Автор: <a class="text-blue-300 hover:underline hover:text-blue-200" href="https://t.me/GrishkaRe" target="_blank">Григорий Ичетовкин</a>
+           | <span class="text-blue-400 font-medium">IT-ЦИФРА.ZONE</span>
+         </p>
+    </div>
 </template>
 
 <style scoped>

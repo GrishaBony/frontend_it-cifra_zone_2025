@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ThemeProvider from '~/components/themeProvider.vue';
+
 useHead({
     script: [
         { src: 'https://telegram.org/js/telegram-web-app.js', defer: true }
@@ -9,7 +11,9 @@ useHead({
 <template>
     <main>
         <ClientOnly>
-            <slot />
+            <ThemeProvider>
+                <slot />
+            </ThemeProvider>
         </ClientOnly>
     </main>
 </template>
