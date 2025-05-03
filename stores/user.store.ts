@@ -1,8 +1,10 @@
-const UseUserStore = defineStore("user", () => {
+export const UseUserStore = defineStore("user", () => {
     const initDataUnsafe = ref();
-    const isTg = computed(() => { return !!initDataUnsafe.value })
+    const isTg = computed(() => { return !!initDataUnsafe.user })
 
     const user = ref(null)
+    const isFirstLaunch = ref(false)
 
-    return {};
+
+    return { initDataUnsafe, isTg, user, isFirstLaunch };
 });

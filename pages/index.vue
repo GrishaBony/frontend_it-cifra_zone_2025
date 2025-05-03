@@ -13,6 +13,15 @@ if (!initData) {
   })
 }
 
+UseUserStore().initDataUnsafe = initDataUnsafe;
+
+
+const user = useAuthApi().login(initData);
+if (!user) {
+    await navigateTo('/wellcome')
+    // useAuthApi().register(initData);
+}
+
 </script>
 
 <template>

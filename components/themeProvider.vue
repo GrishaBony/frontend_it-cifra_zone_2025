@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useTheme } from 'vue-tg'
-import { useThemeStore } from '~/stores/theme.store';
 
 const theme = useTheme()
 const themeStore = useThemeStore()
@@ -15,6 +14,14 @@ theme.onChange(() => {
 </script>
 
 <template>
+    <Notivue v-slot="item">
+      <NotivueSwipe :item="item">
+        <Notification :item="item" :theme="themeStore.colorScheme === 'dark' ? darkTheme : lightTheme">
+          <NotificationProgress :item="item" />
+        </Notification>
+      </NotivueSwipe>
+    </Notivue>
+
     <div :class="`background-color: ${themeStore.backgroundColor}`">
         <slot />
     </div>
