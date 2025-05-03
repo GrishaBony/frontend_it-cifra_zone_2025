@@ -5,12 +5,12 @@ export const useThemeStore = defineStore('theme', () => {
     const backgroundColor = ref<string>('#000000');
 
     const setTheme: any = (newTheme: any) => {
-        if (UseUserStore().isTg) {
+        if (useUserStore().isTg) {
             colorScheme.value = newTheme.colorScheme.value;
             backgroundColor.value = newTheme.backgroundColor.value;
         } else {
-            colorScheme.value = isDark ? 'dark' : 'light'
-            isDark ? backgroundColor.value = '#181818' : backgroundColor.value = '#ffffff'
+            colorScheme.value = isDark.value ? 'dark' : 'light'
+            backgroundColor.value = isDark.value ? '#181818' : '#ffffff'
         }
         
         const root = document.documentElement

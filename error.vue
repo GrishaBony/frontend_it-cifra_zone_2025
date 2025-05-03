@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NuxtTime } from '#components';
+
 const props = defineProps<{
   error: { statusCode: number; }
 }>()
@@ -16,6 +18,17 @@ switch (statusCode) {
     return 'Произошла непредвиденная ошибка на сервере. Попробуйте позже.'
 }
 })
+
+// ======= Ручная передача initData, только для dev =======
+const isDev = import.meta.dev
+const initData = ref();
+
+const init = () => {
+  if (isDev) {
+    useAuthStore().login(initData);
+    useAuthStore().login(initData.value);
+  } 
+}
 </script>
 
 <template>
@@ -32,6 +45,27 @@ switch (statusCode) {
         <p class="text-sm text-gray-600 dark:text-neutral-300">
           {{ userMessage || 'Произошла неизвестная ошибка.' }}
         </p>
+        
+        <!-- ======= Ручная передача initData, только для dev ======= -->
+        <div v-if="isDev && statusCode === 401" class="flex flex-col items-end mt-8 w-full">
+          <form class="flex w-full" @submit.prevent>
+            <input
+              type="password"
+              placeholder="initData"
+              v-model="initData"
+              class="py-1.5 sm:py-2 px-3 pr-10 block w-full rounded-l-lg border border-gray-200 sm:text-sm focus:border-gray-300 focus:ring-gray-300 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+            />
+            <button
+              type="submit"
+              @click="init"
+              class="inset-y-0 right-0 flex items-center p-3 rounded-r-lg border border-gray-200 dark:border-neutral-700 bg-gray-300 text-neutral-700 hover:opacity-80"
+            >
+              <Icon name="bi:arrow-right-circle-fill" class="w-5 h-5" />
+            </button>
+          </form>
+          <span class="m-2 block mb-2 text-sm text-gray-500 dark:text-neutral-500">Это поле видно только в dev* режиме</span>
+        </div>
+        
       </div>
 
       <p class="mt-8 text-xs text-gray-500 dark:text-neutral-400">

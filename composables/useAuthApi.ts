@@ -1,17 +1,17 @@
 import type { UserDto } from '~/types/userDto'
 
 export function useAuthApi() {
-const { $api } = useNuxtApp()
+const { $api } = useNuxtApp()   
 
 const login = async (initData: string) => {
     try {
-        const res = await $api.post<UserDto>(`/auth/tg`, initData)
+        const res = await $api.post<UserDto>(`/auth/tg`, { initData })
         return res.data;
     } catch {
         push.error({
-            title: 'Ошибка',
+            title: `Ошибка`,
             message: 'Не удалось авторизоваться. Пожалуйста попробуйте позже.',
-        })
+        });
     }
 };
     

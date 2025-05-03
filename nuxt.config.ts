@@ -23,6 +23,9 @@ export default defineNuxtConfig({
       collections: ['bi']
     }
   },
+  notivue: {
+    limit: 4,
+  },
   vite: {
     server: {
       allowedHosts: ['grishkare-ai-mini-app.loca.lt']
@@ -31,4 +34,9 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  runtimeConfig: {
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL,
+    }
+  }
 });

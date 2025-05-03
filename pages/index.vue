@@ -7,21 +7,17 @@ const { ready, initData, initDataUnsafe, close } = useWebApp()
 
 ready();
 
+useUserStore().initDataUnsafe = initDataUnsafe;
+
 if (!initData) {
     throw createError({
     statusCode: 401,
   })
 }
 
-UseUserStore().initDataUnsafe = initDataUnsafe;
+useAuthStore().login(initData);
 
-
-const user = useAuthApi().login(initData);
-if (!user) {
-    await navigateTo('/wellcome')
-    // useAuthApi().register(initData);
-}
-
+const isDev = import.meta.dev
 </script>
 
 <template>
@@ -36,6 +32,11 @@ if (!user) {
            Автор: <a class="text-blue-300 hover:underline hover:text-blue-200" href="https://t.me/GrishkaRe" target="_blank">Григорий Ичетовкин</a>
            | <span class="text-blue-400 font-medium">IT-ЦИФРА.ZONE</span>
          </p>
+    </div>
+
+    <!-- ======= initData, только для dev ======= -->
+    <div v-if="isDev" class="border-t-2 border-gray-400 w-full">
+        <input type="text" v-model="initData" class="w-full text-gray-700 h-8 p-2 bg-transparent outline-none border-none focus:outline-none hover:outline-none focus:ring-0">
     </div>
 </template>
 

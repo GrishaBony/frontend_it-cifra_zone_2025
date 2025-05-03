@@ -4,11 +4,18 @@ import { useTheme } from 'vue-tg'
 const theme = useTheme()
 const themeStore = useThemeStore()
 
-themeStore.setTheme(theme);
+onMounted(() => {
+    themeStore.setTheme(theme)
+
+    watch(() => useUserStore().isTg, (isTg) => {
+        if (isTg != null) {
+            themeStore.setTheme(theme)
+        }
+    }, { once: true })
+})
 
 theme.onChange(() => {
     themeStore.setTheme(theme)
-    alert('theme changed' + themeStore.colorScheme + themeStore.backgroundColor)
 })
 
 </script>
@@ -22,7 +29,7 @@ theme.onChange(() => {
       </NotivueSwipe>
     </Notivue>
 
-    <div :class="`background-color: ${themeStore.backgroundColor}`">
+    <div :style="`background-color: ${themeStore.backgroundColor}`">
         <slot />
     </div>
 </template>

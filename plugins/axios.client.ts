@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default defineNuxtPlugin(nuxtApp => {
   const api = axios.create({
-    baseURL: process.env.API_BASE_URL,
+    baseURL: useRuntimeConfig().public.API_BASE_URL,
     headers: {
       'Content-Type': 'application/json'
     }
@@ -18,5 +18,5 @@ export default defineNuxtPlugin(nuxtApp => {
   })
 
   // Регистрируем $api в контексте Nuxt
-  nuxtApp.provide('$api', api)
+  nuxtApp.provide('api', api)
 })
