@@ -1,10 +1,10 @@
-import type { UserSigned } from "~/types/userDto";
+import type { User } from "~/types/userDto";
 
 export const useUserStore = defineStore("user", () => {
     const initDataUnsafe = ref();
     const isTg = computed(() => { return !!initDataUnsafe.value?.user || null })
 
-    const user = ref<UserSigned | null>(null)
+    const user = ref<User | null>(null)
     const isFirstLaunch = ref(false)
 
 

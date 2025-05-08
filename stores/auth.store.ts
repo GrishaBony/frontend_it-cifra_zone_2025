@@ -5,18 +5,33 @@ export const useAuthStore = defineStore("auth", () => {
 
     const login = async (initData: string) => {
         const user = await useAuthApi().login(initData);
-        console.log(user)
-        if (user && !('auth' in user && user.auth == false)) {
+        if (user && 'userExists' in user) {
+            if (user.userExists === false) {
+                isLoggedIn.value = false;
+                userStore.isFirstLaunch = true;
+                return false;
+            } 
+        } else if (user) {
             isLoggedIn.value = true;
+            userStore.isFirstLaunch = false;
             userStore.user = user;
+            return true;
         } else {
-            isLoggedIn.value = false;
-            userStore.isFirstLaunch = true;
-            await navigateTo('/wellcome');
+            push.error({
+                title: `Ошибка`,
+                message: 'Не удалось авторизоваться. Пожалуйста попробуйте позже.',
+            });
         }
-        
+    }
+
+    const register = async (initData: string) => {
+        const user = await useAuthApi().register(initData);
+        if (user) {
+            userStore.user = user;
+            isLoggedIn.value = true;
+        }
     }
 
 
-    return { isLoggedIn, login };
+    return { isLoggedIn, login, register };
 });

@@ -3,9 +3,10 @@ import axios from 'axios'
 export default defineNuxtPlugin(nuxtApp => {
   const api = axios.create({
     baseURL: useRuntimeConfig().public.API_BASE_URL,
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    // headers: {
+    //   'Content-Type': 'application/json'
+    // },
+    withCredentials: true,
   })
 
   // === Interceptors ===

@@ -1,5 +1,4 @@
-export interface UserSigned {
-    auth: boolean;
+export interface User {
     id: string;
     username: string;
     email: string;
@@ -7,5 +6,5 @@ export interface UserSigned {
 }
 
 export type UserDto =
-  | { auth: false }
-  | UserSigned;
+  | { userExists: false }
+  | User;

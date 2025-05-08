@@ -1,23 +1,41 @@
 <script setup lang="ts">
-const { MainButton, useWebApp, useWebAppPopup } = await import('vue-tg')
-
-const { showAlert } = useWebAppPopup()
-
-const { ready, initData, initDataUnsafe, close } = useWebApp()
-
-ready();
-
-useUserStore().initDataUnsafe = initDataUnsafe;
-
-if (!initData) {
-    throw createError({
-    statusCode: 401,
-  })
-}
-
-useAuthStore().login(initData);
+const { useWebApp } = await import('vue-tg')
+const { ready, initData, initDataUnsafe } = useWebApp()
 
 const isDev = import.meta.dev
+
+onMounted(async () => {
+    const userStore = useUserStore();
+    const authStore = useAuthStore();
+
+    ready();
+
+    userStore.initDataUnsafe = initDataUnsafe;
+
+    if (!initData) {
+        throw createError({
+        statusCode: 401,
+      })
+    }
+
+    // Зарежка для dev режима, что бы можно было скопировать initData при необходимости
+    if (isDev) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+    }
+
+    const successLogin = await authStore.login(initData);
+
+    if (successLogin === false) {
+        await navigateTo({ path: '/welcome', query: { initData: initData }});
+    } else if (successLogin === true) {
+        await navigateTo('/newchat')
+    } else {
+        throw createError({
+          statusCode: 401,
+        })
+    }
+})
+
 </script>
 
 <template>
