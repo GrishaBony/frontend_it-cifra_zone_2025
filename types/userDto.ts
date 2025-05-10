@@ -1,8 +1,11 @@
 export interface User {
-    id: string;
-    username: string;
-    email: string;
-    // и т.д.
+  firstName: string;
+  lastName?: string | null;
+  username?: string | null;
+  photoUrl?: string | null;
+  name?: string | null;
+  photo?: string | null;
+  role: 'USER' | 'ORG_USER' | 'ADMIN';
 }
 
 export type UserDto =
