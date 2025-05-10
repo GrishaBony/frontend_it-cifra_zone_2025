@@ -1,13 +1,25 @@
 <script setup lang="ts">
-const userStore = useUserStore();
-const user = userStore.user;
-// FIXME - middleware user != null
 
-const profile = {
-  photo: user.photo || user.photoUrl,
-  user: user.name || user.firstName + user?.lastName ? ` ${user?.lastName}` : '',
-  username: user?.username,
-}
+const userStore = useUserStore();
+const user = computed(() => userStore.user)
+
+// for SSR
+const profile = ref({
+  photo: '',
+  user: '',
+  username: ''
+})
+
+onMounted(() => {
+  const currentUser = user.value
+  if (currentUser) {
+    profile.value = {
+      photo: currentUser.photo || currentUser.photoUrl || '',
+      user: currentUser.name || currentUser.firstName + (currentUser?.lastName ? ` ${currentUser?.lastName}` : ''),
+      username: currentUser?.username || ''
+    }
+  }
+})
 
 const Chats = [
     {id: 'UUID_V4_DKOD09_9d3009dk3_9d309d3_9303d9k', title: 'Чат намбе ван'},
@@ -16,6 +28,17 @@ const Chats = [
         {id: 'UUID_V4_DKOD09_9d3009dk3_9d309d3_9303d9k', title: 'Чатоветка #2'},
     ]}
 ]
+
+const closeSidebar = () => {
+  if (window.innerWidth < 1024) {
+    const sidebar = document.querySelector('#hs-application-sidebar')
+    if (sidebar && window.HSOverlay) {
+      // @ts-ignore
+      window.HSOverlay.close(sidebar)
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -57,7 +80,7 @@ const Chats = [
               </div>
           
               <!-- Content -->
-              <div class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+              <div class="flex flex-col justify-between h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <nav class="hs-accordion-group p-3 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
                   <ul class="flex flex-col space-y-1">
                     <SidebarItem to="/" :is-loading="false">Заголовок чата</SidebarItem>
@@ -116,10 +139,15 @@ const Chats = [
                     </SidebarItem>
                   </ul>
                 </nav>
-                <div>
-                  test
-                  {{userStore.user}}
-                </div>
+                <NuxtLink to="/profile" @click="closeSidebar">
+                  <div class="flex p-3 hover:bg-black/10 rounded-t-2xl items-center gap-2">
+                      <NuxtImg v-if="profile.photo" class="inline-block size-8 rounded-full border-2 border-gray-800 dark:border-gray-200" :src="profile.photo" />
+                      <div class="flex flex-col text-sm text-gray-800 dark:text-gray-200">
+                        <div><p>{{ profile.user }}</p></div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400"><p>{{ profile.username }}</p></div>
+                      </div>
+                  </div>
+                </NuxtLink>
               </div>
               <!-- End Content -->
             </div>

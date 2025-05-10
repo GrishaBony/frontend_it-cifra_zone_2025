@@ -24,10 +24,23 @@ const register = async (initData: string) => {
     }
 }
 
+
+const getMe = async () => {
+    try {
+        const res = await $api.get<User>(`/users/me`)
+        return res.data;
+    } catch {
+        push.error({
+            title: `Ошибка`,
+            message: 'Не удалось получить информацию о пользователе. Пожалуйста перезайдите в mini-app.',
+        });
+    }
+}
+
 //   const updateUser = async (id: string, body: Partial<UserDto>) => {
 //     const { data } = await $api.put<UserDto>(`/users/${id}`, body)
 //     return data
 //   }
 
-  return { login, register }
+  return { login, register, getMe }
 }

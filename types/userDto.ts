@@ -1,3 +1,5 @@
+import type { Role } from "./Role.enum";
+
 export interface User {
   firstName: string;
   lastName?: string | null;
@@ -5,7 +7,7 @@ export interface User {
   photoUrl?: string | null;
   name?: string | null;
   photo?: string | null;
-  role: 'USER' | 'ORG_USER' | 'ADMIN';
+  role: Role;
 }
 
 export type UserDto =

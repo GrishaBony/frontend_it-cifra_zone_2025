@@ -1,4 +1,26 @@
 <script setup lang="ts">
+
+const userStore = useUserStore();
+const user = computed(() => userStore.user)
+
+// for SSR
+const profile = ref({
+  photo: '',
+  user: '',
+  username: ''
+})
+
+onMounted(() => {
+  const currentUser = user.value
+  if (currentUser) {
+    profile.value = {
+      photo: currentUser.photo || currentUser.photoUrl || '',
+      user: currentUser.name || currentUser.firstName + (currentUser?.lastName ? ` ${currentUser?.lastName}` : ''),
+      username: currentUser?.username || ''
+    }
+  }
+})
+
 const Chats = [
     {id: 'UUID_V4_DKOD09_9d3009dk3_9d309d3_9303d9k', title: 'Чат намбе ван'},
     {id: 'UUID_V4_DKOD09_9d3009dk3_9d309d3_9303d9k', title: 'Чат c веточкой', childBranches: [
@@ -6,6 +28,17 @@ const Chats = [
         {id: 'UUID_V4_DKOD09_9d3009dk3_9d309d3_9303d9k', title: 'Чатоветка #2'},
     ]}
 ]
+
+const closeSidebar = () => {
+  if (window.innerWidth < 1024) {
+    const sidebar = document.querySelector('#hs-application-sidebar')
+    if (sidebar && window.HSOverlay) {
+      // @ts-ignore
+      window.HSOverlay.close(sidebar)
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -13,7 +46,7 @@ const Chats = [
         <!-- ========== MAIN CONTENT ========== -->
         <main id="content">
           <!-- Breadcrumb -->
-          <div class="sticky top-0 inset-x-0 z-20 bg-white border-y border-gray-200 px-4 sm:px-6 lg:px-8  dark:bg-neutral-800 dark:border-neutral-700">
+          <div class="sticky top-0 inset-x-0 z-20 bg-transparentpx-4 px-2">
             <div class="flex items-center py-2">
               <!-- Navigation Toggle -->
               <button type="button" class="size-8 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-800 hover:text-gray-500 rounded-lg focus:outline-hidden focus:text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-500 dark:focus:text-neutral-500" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-application-sidebar" aria-label="Toggle navigation" data-hs-overlay="#hs-application-sidebar">
@@ -21,20 +54,6 @@ const Chats = [
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/><path d="m8 9 3 3-3 3"/></svg>
               </button>
               <!-- End Navigation Toggle -->
-          
-              <!-- Breadcrumb -->
-              <ol class="ms-3 flex items-center whitespace-nowrap">
-                <li class="flex items-center text-sm text-gray-800 dark:text-neutral-400">
-                  Application Layout
-                  <svg class="shrink-0 mx-3 overflow-visible size-2.5 text-gray-400 dark:text-neutral-500" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </li>
-                <li class="text-sm font-semibold text-gray-800 truncate dark:text-neutral-400" aria-current="page">
-                  Dashboard
-                </li>
-              </ol>
-              <!-- End Breadcrumb -->
             </div>
           </div>
           <!-- End Breadcrumb -->
@@ -61,7 +80,7 @@ const Chats = [
               </div>
           
               <!-- Content -->
-              <div class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+              <div class="flex flex-col justify-between h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
                 <nav class="hs-accordion-group p-3 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
                   <ul class="flex flex-col space-y-1">
                     <SidebarItem to="/" :is-loading="false">Заголовок чата</SidebarItem>
@@ -120,6 +139,15 @@ const Chats = [
                     </SidebarItem>
                   </ul>
                 </nav>
+                <NuxtLink to="/profile" @click="closeSidebar">
+                  <div class="flex p-3 hover:bg-black/10 rounded-t-2xl items-center gap-2">
+                      <NuxtImg v-if="profile.photo" class="inline-block size-8 rounded-full border-2 border-gray-800 dark:border-gray-200" :src="profile.photo" />
+                      <div class="flex flex-col text-sm text-gray-800 dark:text-gray-200">
+                        <div><p>{{ profile.user }}</p></div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400"><p>{{ profile.username }}</p></div>
+                      </div>
+                  </div>
+                </NuxtLink>
               </div>
               <!-- End Content -->
             </div>
@@ -128,10 +156,7 @@ const Chats = [
       
           <!-- Content -->
           <div class="w-full">
-            <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
-              <!-- your content goes here ... -->
-              <slot />
-            </div>
+            <slot />
           </div>
           <!-- End Content -->
         </main>
