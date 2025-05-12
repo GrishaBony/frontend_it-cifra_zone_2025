@@ -24,7 +24,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   if (requiredRoles) {
     const allowedRoles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles]
     if (!allowedRoles.includes(user.role)) {
-        throw createError({ statusCode: 401 })
+        throw createError({ statusCode: 404 })
     }
   }
 })

@@ -29,9 +29,9 @@ const init = async () => {
   if (isDev) {
     const successLogin = await authStore.login(initData.value);
 
-    if (userStore.isFirstLaunch) {
-        await navigateTo({ path: '/welcome', query: { initData: initData.value } });
-    } else if (successLogin) {
+    if (successLogin === false) {
+        await navigateTo({ path: '/welcome', query: { initData: initData.value }});
+    } else if (successLogin === true) {
         await navigateTo('/newchat')
     } else {
         throw createError({

@@ -37,10 +37,5 @@ const getMe = async () => {
     }
 }
 
-//   const updateUser = async (id: string, body: Partial<UserDto>) => {
-//     const { data } = await $api.put<UserDto>(`/users/${id}`, body)
-//     return data
-//   }
-
   return { login, register, getMe }
 }

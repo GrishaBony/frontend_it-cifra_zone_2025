@@ -28,7 +28,7 @@ onMounted(async () => {
     if (successLogin === false) {
         await navigateTo({ path: '/welcome', query: { initData: initData }});
     } else if (successLogin === true) {
-        await navigateTo('/newchat')
+        await navigateTo('/newchat');
     } else {
         throw createError({
           statusCode: 401,
